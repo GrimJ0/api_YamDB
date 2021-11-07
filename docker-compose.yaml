@@ -1,0 +1,34 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+  static_volume:
+
+services:
+  web:
+    build: .
+    command: gunicorn api_yamdb.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/code/staticfiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/code/staticfiles
+    ports:
+      - 80:80
+    depends_on:
+      - web
+

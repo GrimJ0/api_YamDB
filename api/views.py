@@ -1,7 +1,4 @@
-from pprint import pprint
-
 from django.db.models import Avg
-from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, filters
 from rest_framework.exceptions import ValidationError
@@ -60,7 +57,6 @@ class UserAPIView(APIView):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -99,35 +95,34 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterset_class = TitleRangeFilter
 
 
-
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrAdminOrModerPermission]
-
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         rating = Review.objects.filter(title=title).aggregate(Avg('score'))
         title.rating = rating['score__avg']
-        title.save()
+        title.save(update_fields=["rating"])
         queryset = Review.objects.filter(title_id=title.id)
         return queryset
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         if Review.objects.filter(title=title, author=self.request.user).exists():
             raise ValidationError
-        serializer.save(author=self.request.user, title_id=title.id)
-        rating = Review.objects.filter(title=title).aggregate(Avg('score'))
-        title.rating = rating['score__avg']
-        title.save()
+        serializer.save(author=self.request.user, title=title)
+        int_rating = Review.objects.filter(title=title).aggregate(Avg('score'))
+        title.rating = int_rating['score__avg']
+        title.save(update_fields=["rating"])
 
     def perform_update(self, serializer):
         serializer.save()
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
-        rating = Review.objects.filter(title=title).aggregate(Avg('score'))
-        title.rating = rating['score__avg']
-        title.save()
+        int_rating = Review.objects.filter(title=title).aggregate(Avg('score'))
+        title.rating = int_rating['score__avg']
+        title.save(update_fields=["rating"])
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer

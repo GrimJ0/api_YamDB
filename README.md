@@ -1,7 +1,10 @@
 # api_YamDB
 
-REST API для сервиса YaMDb — базы отзывов о фильмах, книгах и музыке.
+REST API для сервиса YamDB — базы отзывов о фильмах, книгах и музыке.
 
+![alt text](https://i.imgur.com/x1UMgY3.png)
+
+---
 ## Описание
 
 Проект YaMDb собирает отзывы пользователей на произведения. Произведения делятся на категории: «Книги», «Фильмы», «Музыка».
@@ -21,36 +24,37 @@ REST API для сервиса YaMDb — базы отзывов о фильма
 ## Как запустить проект без использования Docker (база данных SQLite3):
 
 1) Клонируйте репозитроий с проектом:
-```
-git clone 
-```
+   ```
+   https://github.com/GrimJ0/api_YamDB.git
+   ```
 2) В созданной директории установите виртуальное окружение, активируйте его и установите необходимые зависимости:
-```
-python3 -m venv venv
-
-. venv/bin/activate
-
-pip install -r requirements.txt
-```
+   ```
+   python3 -m venv venv
+   
+   . venv/bin/activate
+   
+   pip install -r requirements.txt
+   ```
 3) Создайте в директории файл .env и поместите туда SECRET_KEY, необходимый для запуска проекта
    - сгенерировать ключ можно на сайте [Djecrety](https://djecrety.ir/)
 
 4) Выполните миграции:
-```
-python manage.py migrate
-```
+   ```
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
 5) Cоздайте суперпользователя:
-```
-python manage.py createsuperuser
-```
+   ```
+   python manage.py createsuperuser
+   ```
 6) Загрузите тестовые данные:
-```
-python manage.py loaddata fixtures.json
-```
+   ```
+   python manage.py loaddata fixtures.json
+   ```
 8) Запустите сервер:
-```
-python manage.py runserver
-```
+   ```
+   python manage.py runserver
+   ```
 __________________________________
 С помощью команды pytest вы можете запустить тесты и проверить работу модулей:
 ```
@@ -63,39 +67,39 @@ pytest
 
 ## Как запустить проект, используя Docker (база данных PostgreSQL):
 1) Клонируйте репозитроий с проектом:
-```
-git clone 
-```
+   ```
+   https://github.com/GrimJ0/api_YamDB.git
+   ```
 2) В директории проекта создайте файл .env, в котором пропишите следующие переменные окружения (для тестирования можете использовать указанные значения переменных):
- - SECRET_KEY=p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs
- - EMAIL_HOST_USER= # почта для отправки писем пользователям
- - EMAIL_HOST_PASSWORD= # пароль от почты 
- - DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
- - DB_NAME=postgres # имя базы данных
- - POSTGRES_USER=postgres # логин для подключения к базе данных
- - POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
- - DB_HOST=db # название сервиса (контейнера)
- - DB_PORT=5432 # порт для подключения к БД
+   - SECRET_KEY=p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs
+   - EMAIL_HOST_USER= # почта для отправки писем пользователям
+   - EMAIL_HOST_PASSWORD= # пароль от почты 
+   - DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
+   - DB_NAME=postgres # имя базы данных
+   - POSTGRES_USER=postgres # логин для подключения к базе данных
+   - POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
+   - DB_HOST=db # название сервиса (контейнера)
+   - DB_PORT=5432 # порт для подключения к БД
 
 3) С помощью Dockerfile и docker-compose.yaml разверните проект:
-```
-docker-compose up --build
-```
+   ```
+   docker-compose up --build
+   ```
 4) В новом окне терминала узнайте id контейнера api_yamdb_web и войдите в контейнер:
-```
-docker container ls
-```
-```
-docker exec -it <CONTAINER_ID> bash
-```
+   ```
+   docker container ls
+   ```
+   ```
+   docker exec -it <CONTAINER_ID> bash
+   ```
 5) В контейнере выполните миграции, создайте суперпользователя и заполните базу начальными данными:
-```
-python manage.py migrate
-
-python manage.py createsuperuser
-
-python manage.py loaddata fixtures.json
-```
+   ```
+   python manage.py migrate
+   
+   python manage.py createsuperuser
+   
+   python manage.py loaddata fixtures.json
+   ```
 _________________________________
 Ваш проект запустился на http://0.0.0.0:8000/
 
